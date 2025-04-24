@@ -1,6 +1,5 @@
 import { IProduct } from "./product";
 import { IUserDeatails } from "./user";
-
 export interface IWishlist {
   _id: string;
   userId: IUserDeatails;

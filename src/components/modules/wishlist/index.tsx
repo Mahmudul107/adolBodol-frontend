@@ -16,7 +16,7 @@ import { IWishlist } from "@/types/wishlist";
 import { deleteSingleWishlist } from "@/services/wishlist";
 import { toast } from "sonner";
 import { useAppDispatch } from "@/redux/hook";
-import { addProduct } from "@/redux/features/cartSlice";
+import { addToCart } from "@/redux/features/cartSlice";
 
 type ManageWishlistProps = {
   products: IWishlist[];
@@ -26,10 +26,10 @@ const ManageWishlist: React.FC<ManageWishlistProps> = ({ products }) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
 
-  const handleAddToCart = async (product: IProduct) => {
-    dispatch(addProduct(product));
+  const handleAddToCart = async (product: IProduct, id: string) => {
+    dispatch(addToCart(product));
     if (product._id) {
-      await deleteSingleWishlist(product._id);
+      await deleteSingleWishlist(id);
       toast.success("Product added to cart");
       router.push("/cart");
     } else {
@@ -102,7 +102,7 @@ const ManageWishlist: React.FC<ManageWishlistProps> = ({ products }) => {
                   {item?.productId?.category}
                 </p>
                 <p className="font-semibold text-lg text-foreground">
-                  ৳{item?.productId?.price}
+                  $ {item?.productId?.price}
                 </p>
                 <p className="text-sm text-muted-foreground capitalize">
                   {item?.productId?.condition}
@@ -114,7 +114,7 @@ const ManageWishlist: React.FC<ManageWishlistProps> = ({ products }) => {
                 <Button
                   variant="default"
                   size="sm"
-                  onClick={() => handleAddToCart(item?.productId)}>
+                  onClick={() => handleAddToCart(item?.productId, item?._id)}>
                   Add to Cart
                 </Button>
                 <Button
