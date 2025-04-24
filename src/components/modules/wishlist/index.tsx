@@ -11,10 +11,12 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { HeartOff } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { TProduct } from "@/types";
+import { IProduct } from "@/types";
 import { IWishlist } from "@/types/wishlist";
 import { deleteSingleWishlist } from "@/services/wishlist";
 import { toast } from "sonner";
+import { useAppDispatch } from "@/redux/hook";
+import { addProduct } from "@/redux/features/cartSlice";
 
 type ManageWishlistProps = {
   products: IWishlist[];
@@ -22,9 +24,17 @@ type ManageWishlistProps = {
 
 const ManageWishlist: React.FC<ManageWishlistProps> = ({ products }) => {
   const router = useRouter();
+  const dispatch = useAppDispatch();
 
-  const handleAddToCart = (product: TProduct) => {
-    console.log("Viewing:", product);
+  const handleAddToCart = async (product: IProduct) => {
+    dispatch(addProduct(product));
+    if (product._id) {
+      await deleteSingleWishlist(product._id);
+      toast.success("Product added to cart");
+      router.push("/cart");
+    } else {
+      toast.error("Product ID is missing");
+    }
   };
 
   const handleViewDetails = (productId: string) => {
